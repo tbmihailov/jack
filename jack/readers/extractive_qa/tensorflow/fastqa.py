@@ -79,8 +79,11 @@ class FastQAModule(AbstractXQAModelModule):
             )
 
             # extend embeddings with features
-            emb_question_ext = tf.concat([emb_question, question_features], 2)
-            emb_support_ext = tf.concat([emb_support, support_features], 2)
+            # emb_question_ext = tf.concat([emb_question, question_features], 2)
+            # emb_support_ext = tf.concat([emb_support, support_features], 2)
+            emb_question_ext = emb_question
+            emb_support_ext = emb_support
+
 
             # encode question and support
             encoder_type = shared_resources.config.get('encoder', 'lstm').lower()
