@@ -61,7 +61,14 @@ class Duration(object):
 
 checkpoint = Duration()
 
-logging.basicConfig(level=logging.INFO)
+#logFormatter = logging.Formatter('%(asctime)s [%(threadName)-12.12s]: %(levelname)s :  %(message)s')
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+# Enable console logging
+consoleHandler = logging.StreamHandler(sys.stdout)
+#consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
 
 
 @ex.automain
