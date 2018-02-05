@@ -23,19 +23,12 @@ from jack.io.load import loaders
 from jack.util.vocab import Vocab
 
 logger = logging.getLogger(os.path.basename(sys.argv[0]))
-logFormatter = logging.Formatter('%(asctime)s [%(threadName)-12.12s]: %(levelname)s :  %(message)s')
 #logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-# Enable file logging
-logFileName = '%s/%s-%s.log' % ('logs', 'jack', '{:%Y-%m-%d-%H-%M-%S}'.format(datetime.datetime.now()))
-fileHandler = logging.FileHandler(logFileName, 'wb')
-fileHandler.setFormatter(logFormatter)
-logger.addHandler(fileHandler)
-
 # Enable console logging
 consoleHandler = logging.StreamHandler(sys.stdout)
-consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
 logger.addHandler(consoleHandler)
 
 
