@@ -10,6 +10,7 @@ import tempfile
 import uuid
 from time import time
 
+import datetime
 from sacred import Experiment
 from sacred.arg_parser import parse_args
 from sacred.observers import SqlObserver
@@ -22,6 +23,21 @@ from jack.io.load import loaders
 from jack.util.vocab import Vocab
 
 logger = logging.getLogger(os.path.basename(sys.argv[0]))
+logFormatter = logging.Formatter('%(asctime)s [%(threadName)-12.12s]: %(levelname)s :  %(message)s')
+#logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+# Enable file logging
+logFileName = '%s/%s-%s.log' % ('logs', 'jack', '{:%Y-%m-%d-%H-%M-%S}'.format(datetime.datetime.now()))
+fileHandler = logging.FileHandler(logFileName, 'wb')
+fileHandler.setFormatter(logFormatter)
+logger.addHandler(fileHandler)
+
+# Enable console logging
+consoleHandler = logging.StreamHandler(sys.stdout)
+consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
+
 
 parsed_args = dict([x.split("=") for x in parse_args(sys.argv)["UPDATE"]])
 if "config" in parsed_args:
@@ -60,16 +76,6 @@ class Duration(object):
 
 
 checkpoint = Duration()
-
-#logFormatter = logging.Formatter('%(asctime)s [%(threadName)-12.12s]: %(levelname)s :  %(message)s')
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-
-# Enable console logging
-consoleHandler = logging.StreamHandler(sys.stdout)
-#consoleHandler.setFormatter(logFormatter)
-logger.addHandler(consoleHandler)
-
 
 @ex.automain
 def main(config,
