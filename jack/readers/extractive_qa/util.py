@@ -106,22 +106,22 @@ def prepare_data(qa_setting: QASetting,
                     end += 1
 
                 # validated answer:
-                answer_text = a.text
-                answ_token_start = start
-                answ_token_end = end
+                # answer_text = a.text
+                # answ_token_start = start
+                # answ_token_end = end
 
-                if (not answer_text[0] == support_tokens[answ_token_start][0]) or (
-                not answer_text[-1] == support_tokens[answ_token_end][-1]):
-                    answ_span_errors += 1
-                    logging.info("question:%s" % question)
-                    logging.info("context:%s" % supports)
-                    # par_tokens = nltk_parse(paragraph_item["context"])
-                    logging.info("answer error %s [q:%s a:%s]" % (answ_span_errors, qa_setting.id, answ_idx))
-                    logging.info("answer_text:%s" % answer_text)
-                    logging.info("answer error %s [q:%s a:%s]: answ%s" % (
-                        answ_span_errors, qa_setting.id, answ_idx,
-                        str((answer_text, support_tokens[answ_token_start: answ_token_end + 1]))))
-                    logging.info("-------")
+                # if (not answer_text[0] == support_tokens[answ_token_start][0]) or (
+                # not answer_text[-1] == support_tokens[answ_token_end][-1]):
+                #     answ_span_errors += 1
+                #     logging.info("question:%s" % question)
+                #     logging.info("context:%s" % supports)
+                #     # par_tokens = nltk_parse(paragraph_item["context"])
+                #     logging.info("answer error %s [q:%s a:%s]" % (answ_span_errors, qa_setting.id, answ_idx))
+                #     logging.info("answer_text:%s" % answer_text)
+                #     logging.info("answer error %s [q:%s a:%s]: answ%s" % (
+                #         answ_span_errors, qa_setting.id, answ_idx,
+                #         str((answer_text, support_tokens[answ_token_start: answ_token_end + 1]))))
+                #     logging.info("-------")
 
                 if (start, end) not in answer_spans:
                     answer_spans.append((start, end))
