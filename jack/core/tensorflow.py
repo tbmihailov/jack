@@ -248,6 +248,35 @@ class TFReader(JTReader):
         num_params = sum(variable_size(v) for v in self.model_module.train_variables)
         logger.info("Number of parameters: %d" % num_params)
 
+        try:
+            param_stats = tf.contrib.tfprof.model_analyzer.print_model_analysis(tf.get_default_graph(),
+                                                                                tfprof_options=tf.contrib.tfprof.model_analyzer.TRAINABLE_VARS_PARAMS_STAT_OPTIONS)
+            logging.info('total_params: %d\n' % param_stats.total_parameters)
+        except Exception as err:
+            logging.error(err)
+
+        try:
+            # base param statistics
+            dnn_model_trainable_variables = self.model_module.train_variables
+            variable_size = lambda v: reduce(lambda x, y: x * y,
+                                             v.get_shape().as_list()) if v.get_shape() else 1
+
+            logging.info("Trainable params:")
+            var_with_size = [(v.name, variable_size(v)) for v in dnn_model_trainable_variables]
+            var_with_size.sort(key=lambda v: [0])
+            for v in var_with_size:
+                logging.info("%s: %s" % (v[0], v[1]))
+
+            num_params = sum(variable_size(v) for v in dnn_model_trainable_variables)
+            logger.info("Total Number of parameters: %d" % num_params)
+
+            # Full param statistics
+            param_stats = tf.contrib.tfprof.model_analyzer.print_model_analysis(curr_graph,
+                                                                                tfprof_options=tf.contrib.tfprof.model_analyzer.TRAINABLE_VARS_PARAMS_STAT_OPTIONS)
+            logging.info('total_params: %d\n' % param_stats.total_parameters)
+        except Exception as err:
+            logging.error(err)
+
         # initialize non model variables like learning rate, optimizer vars ...
         self.session.run([v.initializer for v in tf.global_variables() if v not in self.model_module.variables])
         return batches, loss, min_op, summaries

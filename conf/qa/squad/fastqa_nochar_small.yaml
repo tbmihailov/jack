@@ -1,0 +1,10 @@
+parent_config: ['./conf/qa/fastqa.yaml', './conf/qa/squad/abstract_squad.yaml']
+seed: 1337
+
+with_char_embeddings: False
+
+repr_dim: 150
+dropout: 0.2
+
+embedding_format: 'memory_map_dir'
+embedding_file: 'data/GloVe/glove.6B.50d.memory_map_dir'

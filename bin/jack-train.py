@@ -26,11 +26,6 @@ logger = logging.getLogger(os.path.basename(sys.argv[0]))
 #logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-# Enable console logging
-consoleHandler = logging.StreamHandler(sys.stdout)
-logger.addHandler(consoleHandler)
-logger.addHandler(consoleHandler)
-
 
 parsed_args = dict([x.split("=") for x in parse_args(sys.argv)["UPDATE"]])
 if "config" in parsed_args:
@@ -85,6 +80,11 @@ def main(config,
          num_dev_examples,
          test,
          vocab_from_embeddings):
+
+   # Enable console logging
+    consoleHandler = logging.StreamHandler(sys.stdout)
+    logger.addHandler(consoleHandler)
+
     logger.info("TRAINING")
 
     if 'JACK_TEMP' not in os.environ:
