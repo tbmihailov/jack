@@ -271,7 +271,7 @@ class TFReader(JTReader):
             logger.info("Total Number of parameters: %d" % num_params)
 
             # Full param statistics
-            param_stats = tf.contrib.tfprof.model_analyzer.print_model_analysis(curr_graph,
+            param_stats = tf.contrib.tfprof.model_analyzer.print_model_analysis(tf.get_default_graph(),
                                                                                 tfprof_options=tf.contrib.tfprof.model_analyzer.TRAINABLE_VARS_PARAMS_STAT_OPTIONS)
             logging.info('total_params: %d\n' % param_stats.total_parameters)
         except Exception as err:

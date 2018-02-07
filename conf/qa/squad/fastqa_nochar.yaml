@@ -5,3 +5,5 @@ with_char_embeddings: False
 
 repr_dim: 150
 dropout: 0.2
+
+epochs: 50
