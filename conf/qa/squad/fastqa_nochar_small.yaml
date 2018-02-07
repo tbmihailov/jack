@@ -8,3 +8,5 @@ dropout: 0.2
 
 embedding_format: 'memory_map_dir'
 embedding_file: 'data/GloVe/glove.6B.50d.memory_map_dir'
+
+validation_interval: 5

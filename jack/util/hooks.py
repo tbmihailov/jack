@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import json
 from abc import *
 from collections import defaultdict
 from datetime import datetime
@@ -324,13 +324,31 @@ class EvalHook(TraceHook):
         bar = progressbar.ProgressBar(
             max_value=len(self._dataset) // self._batch_size + 1,
             widgets=[' [', progressbar.Timer(), '] ', progressbar.Bar(), ' (', progressbar.ETA(), ') '])
+
+        all_predictions = {}
         for i, batch in bar(enumerate(self._batches)):
             inputs = self._dataset[i * self._batch_size:(i + 1) * self._batch_size]
             predictions = self.reader.model_module(batch, self._ports)
+
             m = self.apply_metrics(inputs, predictions)
             for k in self._metrics:
                 metrics[k].append(m[k])
+            if "predictions_export" in m:
+                predictions_export = m["predictions_export"]
+                for k,v in predictions_export.items():
+                    all_predictions[k] = v
 
+        if len(all_predictions) > 0:
+            pred_file_name = "predictions.json"
+            try:
+                f_pred = open(pred_file_name, mode="w")
+                json.dump(all_predictions, f_pred)
+
+                logging.error("Predictions exported : %s" % pred_file_name)
+
+            except Exception as ex:
+                logging.error("Error exporting to : %s" % pred_file_name)
+                logging.error(ex)
         metrics = self.combine_metrics(metrics)
         super().add_to_history(metrics, self._iter, epoch)
 
@@ -391,12 +409,14 @@ class XQAEvalHook(EvalHook):
         p_answers = self.reader.output_module(qs, *(tensors[p] for p in self.reader.output_module.input_ports))
 
         f1 = exact_match = 0
+        all_predictions = {}
         for pa, (q, ass) in zip(p_answers, inputs):
             ground_truth = [a.text for a in ass]
             f1 += metric_max_over_ground_truths(f1_score, pa[0].text, ground_truth)
             exact_match += metric_max_over_ground_truths(exact_match_score, pa[0].text, ground_truth)
+            all_predictions[q.id] = pa[0].text
 
-        return {"f1": f1, "exact": exact_match}
+        return {"f1": f1, "exact": exact_match, "predictions_export": all_predictions}
 
 
 class ClassificationEvalHook(EvalHook):
